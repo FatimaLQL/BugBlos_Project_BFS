@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mi_aplicacion/data/database_helper.dart';
+import 'package:mi_aplicacion/data/sesion_usuario.dart';
 import 'package:mi_aplicacion/screens/screen2.dart';
 import 'package:mi_aplicacion/screens/register_screen.dart';
 import 'package:mi_aplicacion/theme/app_theme.dart';
@@ -51,12 +52,12 @@ class _LoginScreenState extends State<LoginScreen> {
       if (!mounted) return;
 
       if (usuario != null) {
-        final nombre = (usuario['nombre'] ?? '').toString().trim();
+        SesionUsuario.iniciar(usuario);
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
             builder: (context) => Screen2(
-              nombreUsuario: nombre.isEmpty ? 'Usuario' : nombre,
+              nombreUsuario: SesionUsuario.nombre,
             ),
           ),
         );
