@@ -197,6 +197,10 @@ class _Screen6State extends State<Screen6> {
     final String rutaFoto = fotoSeleccionada?.path ?? fotoExistente;
 
     final Map<String, String> datosActualizados = {
+      'id': modoEdicion
+          ? (widget.persona!['id'] ??
+                DateTime.now().microsecondsSinceEpoch.toString())
+          : DateTime.now().microsecondsSinceEpoch.toString(),
       'nombre': nombreController.text.trim(),
       'edad': edadController.text.trim(),
       'sexo': sexoSeleccionado ?? 'No especificado',

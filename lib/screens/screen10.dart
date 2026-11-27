@@ -4,11 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mi_aplicacion/theme/app_theme.dart';
 import 'package:mi_aplicacion/data/personas_data.dart';
-
-//lo conectaremos a Firebase.
-class ReportesData {
-  static final List<Map<String, String>> reportes = [];
-}
+import 'package:mi_aplicacion/data/reportes_data.dart';
+import 'package:mi_aplicacion/data/notificaciones_data.dart';
 
 class Screen10 extends StatefulWidget {
   const Screen10({super.key});
@@ -72,6 +69,7 @@ class _Screen10State extends State<Screen10> {
     });
 
     final nuevoReporte = <String, String>{
+      'personaId': personaSeleccionada!['id'] ?? '',
       'persona': personaSeleccionada!['nombre'] ?? '',
       'edadPersona': personaSeleccionada!['edad'] ?? '',
       'lugarDesaparicion': personaSeleccionada!['lugar'] ?? '',
@@ -89,6 +87,10 @@ class _Screen10State extends State<Screen10> {
     };
 
     ReportesData.reportes.insert(0, nuevoReporte);
+    NotificacionesData.agregarNuevoReporte(
+      personaSeleccionada!['nombre'] ?? 'Persona desaparecida',
+      personaSeleccionada!['id'] ?? '',
+    );
 
     setState(() {
       enviando = false;

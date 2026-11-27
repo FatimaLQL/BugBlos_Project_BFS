@@ -25,7 +25,7 @@ class NotificacionesData {
     },
   ];
 
-  // Agregar una notificación cuando se actualiza un boletín.
+  // Notificación cuando se actualiza un boletín.
   static void agregarActualizacion(String nombre) {
     notificaciones.insert(0, {
       'titulo': 'Boletín actualizado',
@@ -34,6 +34,18 @@ class NotificacionesData {
       'fecha': 'Ahora',
       'icono': Icons.edit_document,
       'leida': false,
+    });
+  }
+
+  // Notificación cuando llega un reporte sobre una persona.
+  static void agregarNuevoReporte(String nombre, String personaId) {
+    notificaciones.insert(0, {
+      'titulo': 'Nuevo reporte recibido',
+      'mensaje': 'Se recibió nueva información sobre el caso de $nombre.',
+      'fecha': 'Ahora',
+      'icono': Icons.visibility_outlined,
+      'leida': false,
+      'personaId': personaId,
     });
   }
 

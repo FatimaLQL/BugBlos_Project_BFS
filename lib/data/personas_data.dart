@@ -1,6 +1,7 @@
 class PersonasData {
   static final List<Map<String, String>> personas = [
     {
+      'id': 'persona_001',
       'nombre': 'Persona de ejemplo 1',
       'edad': '25 años',
       'sexo': 'Femenino',
@@ -10,6 +11,7 @@ class PersonasData {
       'esMia': 'false',
     },
     {
+      'id': 'persona_002',
       'nombre': 'Persona de ejemplo 2',
       'edad': '30 años',
       'sexo': 'Masculino',

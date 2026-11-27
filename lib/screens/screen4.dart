@@ -4,9 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mi_aplicacion/data/personas_data.dart';
 import 'package:mi_aplicacion/theme/app_theme.dart';
+import 'package:mi_aplicacion/data/reportes_data.dart';
 
 import 'screen6.dart';
 import 'screen8.dart';
+import 'screen11.dart';
 
 class Screen4 extends StatefulWidget {
   final Map<String, String> persona;
@@ -23,6 +25,27 @@ class _Screen4State extends State<Screen4> {
   bool huboCambios = false;
 
   bool get esMia => persona['esMia'] == 'true';
+
+  int get cantidadReportes {
+    final idPersona = persona['id'] ?? '';
+
+    if (idPersona.isEmpty) return 0;
+
+    return ReportesData.reportes
+        .where((reporte) => reporte['personaId'] == idPersona)
+        .length;
+  }
+
+  Future<void> abrirReportes() async {
+    await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => Screen11(persona: persona)),
+    );
+
+    if (mounted) {
+      setState(() {});
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -169,6 +192,24 @@ class _Screen4State extends State<Screen4> {
               ),
 
               const SizedBox(height: 30),
+
+              if (esMia) ...[
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton.icon(
+                    onPressed: abrirReportes,
+                    icon: const Icon(Icons.assignment_outlined),
+                    label: Text('Ver reportes recibidos ($cantidadReportes)'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppTheme.fondoTarjeta,
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      side: const BorderSide(color: AppTheme.moradoClaro),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 15),
+              ],
 
               // Compartir siempre está disponible.
               SizedBox(

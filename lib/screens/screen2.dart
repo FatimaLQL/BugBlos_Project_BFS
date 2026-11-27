@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 
+import 'package:mi_aplicacion/data/notificaciones_data.dart';
+
 import 'screen3.dart';
 import 'screen5.dart';
 import 'screen7.dart';
 import 'screen10.dart';
 
-class Screen2 extends StatelessWidget {
+class Screen2 extends StatefulWidget {
   const Screen2({super.key});
 
   static const Color negroFondo = Color(0xFF080610);
@@ -14,9 +16,40 @@ class Screen2 extends StatelessWidget {
   static const Color bordeMorado = Color(0xFF482263);
 
   @override
+  State<Screen2> createState() => _Screen2State();
+}
+
+class _Screen2State extends State<Screen2> {
+  int get pendientes => NotificacionesData.pendientes;
+
+  // Abrir notificaciones y actualizar el contador al regresar.
+  Future<void> abrirNotificaciones() async {
+    await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => const Screen5()),
+    );
+
+    if (mounted) {
+      setState(() {});
+    }
+  }
+
+  // Abrir formulario y actualizar el contador al regresar.
+  Future<void> abrirReporte() async {
+    await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => const Screen10()),
+    );
+
+    if (mounted) {
+      setState(() {});
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: negroFondo,
+      backgroundColor: Screen2.negroFondo,
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(20),
@@ -25,7 +58,11 @@ class Screen2 extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  const Icon(Icons.favorite, color: moradoNeon, size: 42),
+                  const Icon(
+                    Icons.favorite,
+                    color: Screen2.moradoNeon,
+                    size: 42,
+                  ),
                   const SizedBox(width: 10),
                   const Expanded(
                     child: Text(
@@ -37,18 +74,54 @@ class Screen2 extends StatelessWidget {
                       ),
                     ),
                   ),
-                  IconButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (_) => const Screen5()),
-                      );
-                    },
-                    icon: const Icon(
-                      Icons.notifications_none,
-                      color: Colors.white,
-                      size: 29,
-                    ),
+
+                  // Campanita con contador de notificaciones nuevas.
+                  Stack(
+                    clipBehavior: Clip.none,
+                    children: [
+                      IconButton(
+                        onPressed: abrirNotificaciones,
+                        icon: const Icon(
+                          Icons.notifications_none,
+                          color: Colors.white,
+                          size: 29,
+                        ),
+                      ),
+
+                      if (pendientes > 0)
+                        Positioned(
+                          right: 3,
+                          top: 2,
+                          child: Container(
+                            constraints: const BoxConstraints(
+                              minWidth: 19,
+                              minHeight: 19,
+                            ),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 5,
+                              vertical: 2,
+                            ),
+                            decoration: BoxDecoration(
+                              color: const Color.fromARGB(255, 215, 40, 215),
+                              borderRadius: BorderRadius.circular(20),
+                              border: Border.all(
+                                color: Screen2.negroFondo,
+                                width: 1.5,
+                              ),
+                            ),
+                            child: Center(
+                              child: Text(
+                                pendientes > 99 ? '99+' : '$pendientes',
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                    ],
                   ),
                 ],
               ),
@@ -63,13 +136,13 @@ class Screen2 extends StatelessWidget {
                     colors: [Color(0xFF7215B8), Color(0xFF21102F)],
                   ),
                   borderRadius: BorderRadius.circular(22),
-                  border: Border.all(color: bordeMorado),
+                  border: Border.all(color: Screen2.bordeMorado),
                 ),
                 child: Row(
                   children: [
                     const CircleAvatar(
                       radius: 35,
-                      backgroundColor: moradoNeon,
+                      backgroundColor: Screen2.moradoNeon,
                       child: Icon(Icons.person, color: Colors.white, size: 42),
                     ),
                     const SizedBox(width: 15),
@@ -141,12 +214,7 @@ class Screen2 extends StatelessWidget {
                       context,
                       Icons.campaign_outlined,
                       'Reportar información',
-                      () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (_) => const Screen10()),
-                        );
-                      },
+                      abrirReporte,
                     ),
                   ),
                 ],
@@ -157,13 +225,13 @@ class Screen2 extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(18),
                 decoration: BoxDecoration(
-                  color: tarjetaFondo,
+                  color: Screen2.tarjetaFondo,
                   borderRadius: BorderRadius.circular(18),
-                  border: Border.all(color: bordeMorado),
+                  border: Border.all(color: Screen2.bordeMorado),
                 ),
                 child: const Row(
                   children: [
-                    Icon(Icons.favorite, color: moradoNeon, size: 35),
+                    Icon(Icons.favorite, color: Screen2.moradoNeon, size: 35),
                     SizedBox(width: 15),
                     Expanded(
                       child: Column(
@@ -201,7 +269,7 @@ class Screen2 extends StatelessWidget {
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: 0,
         backgroundColor: const Color(0xFF0D0A14),
-        selectedItemColor: moradoNeon,
+        selectedItemColor: Screen2.moradoNeon,
         unselectedItemColor: Colors.white54,
         type: BottomNavigationBarType.fixed,
         onTap: (index) {
@@ -257,14 +325,14 @@ class Screen2 extends StatelessWidget {
         height: 155,
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
-          color: tarjetaFondo,
+          color: Screen2.tarjetaFondo,
           borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: bordeMorado),
+          border: Border.all(color: Screen2.bordeMorado),
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(icono, color: moradoNeon, size: 43),
+            Icon(icono, color: Screen2.moradoNeon, size: 43),
             const SizedBox(height: 15),
             Text(
               texto,

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mi_aplicacion/theme/app_theme.dart';
 import 'package:mi_aplicacion/data/notificaciones_data.dart';
+import 'package:mi_aplicacion/data/personas_data.dart';
 
 class Screen5 extends StatefulWidget {
   const Screen5({super.key});
@@ -10,10 +11,22 @@ class Screen5 extends StatefulWidget {
 }
 
 class _Screen5State extends State<Screen5> {
-  List<Map<String, dynamic>> get notificaciones =>
-      NotificacionesData.notificaciones;
+  List<Map<String, dynamic>> get notificaciones {
+    final idsPropios = PersonasData.personas
+        .where((persona) => persona['esMia'] == 'true')
+        .map((persona) => persona['id'] ?? '')
+        .toSet();
 
-  int get pendientes => NotificacionesData.pendientes;
+    return NotificacionesData.notificaciones.where((notificacion) {
+      final personaId = notificacion['personaId'];
+
+      if (personaId == null) return true;
+
+      return idsPropios.contains(personaId);
+    }).toList();
+  }
+
+  int get pendientes => notificaciones.where((n) => n['leida'] == false).length;
 
   void marcarTodas() {
     setState(() {
@@ -31,8 +44,9 @@ class _Screen5State extends State<Screen5> {
   }
 
   void eliminarNotificacion(int index) {
+    final notificacion = notificaciones[index];
     setState(() {
-      notificaciones.removeAt(index);
+      NotificacionesData.notificaciones.remove(notificacion);
     });
   }
 
