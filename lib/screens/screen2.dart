@@ -8,7 +8,9 @@ import 'screen7.dart';
 import 'screen10.dart';
 
 class Screen2 extends StatefulWidget {
-  const Screen2({super.key});
+  final String nombreUsuario;
+
+  const Screen2({super.key, this.nombreUsuario = 'Usuario'});
 
   static const Color negroFondo = Color(0xFF080610);
   static const Color tarjetaFondo = Color(0xFF151020);
@@ -143,20 +145,22 @@ class _Screen2State extends State<Screen2> {
                       child: Icon(Icons.person, color: Colors.white, size: 42),
                     ),
                     const SizedBox(width: 15),
-                    const Expanded(
+                    Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            '¡Holaa, Fatima!',
-                            style: TextStyle(
+                            '¡Hola, ${widget.nombreUsuario}!',
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
                               color: Colors.white,
                               fontSize: 21,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          SizedBox(height: 6),
-                          Text(
+                          const SizedBox(height: 6),
+                          const Text(
                             'Juntos por un país más seguro.',
                             style: TextStyle(
                               color: Colors.white70,
