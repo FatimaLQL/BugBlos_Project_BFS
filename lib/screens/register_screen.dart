@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mi_aplicacion/data/database_helper.dart';
+import 'package:mi_aplicacion/data/sesion_usuario.dart';
 import 'package:mi_aplicacion/screens/screen2.dart';
 import 'package:mi_aplicacion/theme/app_theme.dart';
 
@@ -54,11 +55,18 @@ class _RegisterScreenState extends State<RegisterScreen> {
     setState(() => _cargando = true);
 
     try {
-      await DatabaseHelper.instance.registrarUsuario({
+      final id = await DatabaseHelper.instance.registrarUsuario({
         'nombre': nombre,
         'correo': correo,
         'telefono': telefono,
         'password': password,
+      });
+
+      SesionUsuario.iniciar({
+        'id': id,
+        'nombre': nombre,
+        'correo': correo,
+        'telefono': telefono,
       });
 
       if (!mounted) return;

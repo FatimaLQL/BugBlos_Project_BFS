@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
 import 'package:mi_aplicacion/data/notificaciones_data.dart';
+import 'package:mi_aplicacion/data/sesion_usuario.dart';
 
+import 'perfil_usuario_screen.dart';
 import 'screen3.dart';
 import 'screen5.dart';
 import 'screen7.dart';
@@ -150,7 +152,7 @@ class _Screen2State extends State<Screen2> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            '¡Hola, ${widget.nombreUsuario}!',
+                            '¡Hola, ${SesionUsuario.nombre}!',
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             style: const TextStyle(
@@ -289,9 +291,12 @@ class _Screen2State extends State<Screen2> {
           }
 
           if (index == 3) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Próximamente: Mi perfil')),
-            );
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const PerfilUsuarioScreen()),
+            ).then((_) {
+              if (mounted) setState(() {});
+            });
           }
         },
         items: const [
