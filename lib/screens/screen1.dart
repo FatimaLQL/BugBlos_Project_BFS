@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:mi_aplicacion/screens/login_screen.dart';
 
-import 'screen2.dart';
 
 class Screen1 extends StatelessWidget {
   const Screen1({super.key});
@@ -71,7 +71,7 @@ class Screen1 extends StatelessWidget {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => const Screen2(),
+                          builder: (context) => const LoginScreen(),
                         ),
                       );
                     },
