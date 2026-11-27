@@ -22,7 +22,6 @@ class Screen2 extends StatefulWidget {
 class _Screen2State extends State<Screen2> {
   int get pendientes => NotificacionesData.pendientes;
 
-  // Abrir notificaciones y actualizar el contador al regresar.
   Future<void> abrirNotificaciones() async {
     await Navigator.push(
       context,
@@ -34,7 +33,6 @@ class _Screen2State extends State<Screen2> {
     }
   }
 
-  // Abrir formulario y actualizar el contador al regresar.
   Future<void> abrirReporte() async {
     await Navigator.push(
       context,
@@ -75,7 +73,6 @@ class _Screen2State extends State<Screen2> {
                     ),
                   ),
 
-                  // Campanita con contador de notificaciones nuevas.
                   Stack(
                     clipBehavior: Clip.none,
                     children: [
@@ -151,7 +148,7 @@ class _Screen2State extends State<Screen2> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            '¡Buenas Tardes, Fátima!',
+                            '¡Holaa, Fatima!',
                             style: TextStyle(
                               color: Colors.white,
                               fontSize: 21,

@@ -14,10 +14,9 @@ class Screen11 extends StatefulWidget {
 }
 
 class _Screen11State extends State<Screen11> {
-  // Comprobar que la publicación pertenece al usuario.
   bool get esMia => widget.persona['esMia'] == 'true';
 
-  // Obtener únicamente los reportes de esta persona.
+  // Obtener solamente los reportes de esta persona.
   List<Map<String, String>> get reportesPersona {
     final idPersona = widget.persona['id'] ?? '';
 
@@ -35,139 +34,20 @@ class _Screen11State extends State<Screen11> {
         .length;
   }
 
-  // Marcar reporte como revisado.
-  void cambiarEstado(Map<String, String> reporte) {
-    setState(() {
-      reporte['estadoReporte'] = 'Revisado';
-    });
-  }
-
-  // Mostrar información completa del reporte.
-  void mostrarDetalles(Map<String, String> reporte) {
-    final rutaEvidencia = reporte['evidencia'] ?? '';
-
-    final tieneEvidencia =
-        rutaEvidencia.isNotEmpty && File(rutaEvidencia).existsSync();
-
-    showDialog(
-      context: context,
-      builder: (dialogContext) {
-        return AlertDialog(
-          backgroundColor: AppTheme.fondoTarjeta,
-          title: const Text(
-            'Detalles del reporte',
-            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-          ),
-          content: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                detalle('Persona', reporte['persona']),
-                detalle('Fecha del avistamiento', reporte['fechaAvistamiento']),
-                detalle('Hora', reporte['horaAvistamiento']),
-                detalle('Estado', reporte['estado']),
-                detalle('Municipio', reporte['municipio']),
-                detalle('Ubicación', reporte['ubicacion']),
-                detalle('Descripción', reporte['descripcion']),
-                detalle('Vestimenta y características', reporte['detalles']),
-                detalle('Contacto', reporte['contacto']),
-
-                const SizedBox(height: 12),
-
-                if (tieneEvidencia) ...[
-                  const Text(
-                    'Evidencia fotográfica',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(12),
-                    child: Image.file(
-                      File(rutaEvidencia),
-                      width: double.infinity,
-                      height: 190,
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                ] else
-                  const Text(
-                    'No se adjuntó evidencia fotográfica.',
-                    style: TextStyle(color: Colors.white54),
-                  ),
-
-                const SizedBox(height: 12),
-
-                detalle(
-                  'Estado del reporte',
-                  reporte['estadoReporte'] ?? 'Pendiente',
-                ),
-              ],
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(dialogContext),
-              child: const Text('Cerrar'),
-            ),
-
-            if (reporte['estadoReporte'] != 'Revisado')
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppTheme.morado,
-                  foregroundColor: Colors.white,
-                ),
-                onPressed: () {
-                  cambiarEstado(reporte);
-                  Navigator.pop(dialogContext);
-                },
-                child: const Text('Marcar como revisado'),
-              ),
-          ],
-        );
-      },
+  // Abrir el detalle en una pantalla independiente.
+  Future<void> consultarReporte(Map<String, String> reporte) async {
+    final resultado = await Navigator.push<bool>(
+      context,
+      MaterialPageRoute(builder: (_) => DetalleReporteScreen(reporte: reporte)),
     );
-  }
 
-  // Widget para mostrar cada dato.
-  Widget detalle(String titulo, String? valor) {
-    if (valor == null || valor.trim().isEmpty) {
-      return const SizedBox.shrink();
+    if (mounted && resultado == true) {
+      setState(() {});
     }
-
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 12),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            titulo,
-            style: const TextStyle(
-              color: AppTheme.moradoClaro,
-              fontWeight: FontWeight.bold,
-              fontSize: 13,
-            ),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            valor,
-            style: const TextStyle(
-              color: Colors.white70,
-              fontSize: 14,
-              height: 1.4,
-            ),
-          ),
-        ],
-      ),
-    );
   }
 
   @override
   Widget build(BuildContext context) {
-    // Evitar mostrar reportes de publicaciones ajenas.
     if (!esMia) {
       return Scaffold(
         backgroundColor: AppTheme.fondo,
@@ -193,7 +73,6 @@ class _Screen11State extends State<Screen11> {
 
     return Scaffold(
       backgroundColor: AppTheme.fondo,
-
       appBar: AppBar(
         backgroundColor: AppTheme.fondo,
         foregroundColor: Colors.white,
@@ -203,7 +82,6 @@ class _Screen11State extends State<Screen11> {
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
       ),
-
       body: SafeArea(
         child: reportes.isEmpty
             ? Center(
@@ -245,9 +123,7 @@ class _Screen11State extends State<Screen11> {
                     '${widget.persona['nombre'] ?? 'esta persona'}',
                     style: const TextStyle(color: Colors.white70, fontSize: 14),
                   ),
-
                   const SizedBox(height: 8),
-
                   Text(
                     'Total: ${reportes.length} | '
                     'Pendientes: $reportesPendientes',
@@ -257,7 +133,6 @@ class _Screen11State extends State<Screen11> {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-
                   const SizedBox(height: 15),
 
                   ...reportes.map((reporte) {
@@ -282,9 +157,7 @@ class _Screen11State extends State<Screen11> {
                                   color: AppTheme.moradoClaro,
                                   size: 25,
                                 ),
-
                                 const SizedBox(width: 10),
-
                                 const Expanded(
                                   child: Text(
                                     'Información recibida',
@@ -295,7 +168,6 @@ class _Screen11State extends State<Screen11> {
                                     ),
                                   ),
                                 ),
-
                                 Container(
                                   padding: const EdgeInsets.symmetric(
                                     horizontal: 10,
@@ -320,9 +192,7 @@ class _Screen11State extends State<Screen11> {
                                 ),
                               ],
                             ),
-
                             const SizedBox(height: 14),
-
                             Text(
                               '${reporte['fechaAvistamiento'] ?? 'Fecha no disponible'} • '
                               '${reporte['horaAvistamiento'] ?? 'Hora no disponible'}',
@@ -331,9 +201,7 @@ class _Screen11State extends State<Screen11> {
                                 fontSize: 13,
                               ),
                             ),
-
                             const SizedBox(height: 8),
-
                             Text(
                               reporte['ubicacion'] ?? 'Ubicación no disponible',
                               style: const TextStyle(
@@ -341,9 +209,7 @@ class _Screen11State extends State<Screen11> {
                                 fontSize: 14,
                               ),
                             ),
-
                             const SizedBox(height: 8),
-
                             Text(
                               reporte['descripcion'] ?? 'Sin descripción',
                               maxLines: 3,
@@ -353,13 +219,11 @@ class _Screen11State extends State<Screen11> {
                                 height: 1.4,
                               ),
                             ),
-
                             const SizedBox(height: 14),
-
                             SizedBox(
                               width: double.infinity,
                               child: OutlinedButton.icon(
-                                onPressed: () => mostrarDetalles(reporte),
+                                onPressed: () => consultarReporte(reporte),
                                 icon: const Icon(Icons.visibility_outlined),
                                 label: const Text('Consultar reporte completo'),
                                 style: OutlinedButton.styleFrom(
@@ -377,6 +241,232 @@ class _Screen11State extends State<Screen11> {
                   }),
                 ],
               ),
+      ),
+    );
+  }
+}
+
+class DetalleReporteScreen extends StatefulWidget {
+  final Map<String, String> reporte;
+
+  const DetalleReporteScreen({super.key, required this.reporte});
+
+  @override
+  State<DetalleReporteScreen> createState() => _DetalleReporteScreenState();
+}
+
+class _DetalleReporteScreenState extends State<DetalleReporteScreen> {
+  Map<String, String> get reporte => widget.reporte;
+
+  bool get revisado => reporte['estadoReporte'] == 'Revisado';
+
+  void marcarRevisado() {
+    setState(() {
+      reporte['estadoReporte'] = 'Revisado';
+    });
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Reporte marcado como revisado.')),
+    );
+  }
+
+  // Mostrar cada dato.
+  Widget detalle(String titulo, String? valor) {
+    if (valor == null || valor.trim().isEmpty) {
+      return const SizedBox.shrink();
+    }
+
+    return Container(
+      width: double.infinity,
+      margin: const EdgeInsets.only(bottom: 14),
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: AppTheme.fondoTarjeta,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: AppTheme.borde),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            titulo,
+            style: const TextStyle(
+              color: AppTheme.moradoClaro,
+              fontWeight: FontWeight.bold,
+              fontSize: 13,
+            ),
+          ),
+          const SizedBox(height: 7),
+          Text(
+            valor,
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 15,
+              height: 1.5,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final rutaEvidencia = reporte['evidencia'] ?? '';
+
+    final tieneEvidencia =
+        rutaEvidencia.isNotEmpty && File(rutaEvidencia).existsSync();
+
+    return Scaffold(
+      backgroundColor: AppTheme.fondo,
+      appBar: AppBar(
+        backgroundColor: AppTheme.fondo,
+        foregroundColor: Colors.white,
+        elevation: 0,
+        title: const Text(
+          'Detalles del reporte',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+      ),
+      body: SafeArea(
+        child: ListView(
+          padding: const EdgeInsets.all(18),
+          children: [
+            Center(
+              child: Icon(
+                Icons.assignment_outlined,
+                size: 65,
+                color: AppTheme.moradoClaro,
+              ),
+            ),
+            const SizedBox(height: 12),
+            const Center(
+              child: Text(
+                'Información del avistamiento',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 19,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+            const SizedBox(height: 20),
+
+            detalle('Persona', reporte['persona']),
+            detalle('Fecha del avistamiento', reporte['fechaAvistamiento']),
+            detalle('Hora', reporte['horaAvistamiento']),
+            detalle('Estado', reporte['estado']),
+            detalle('Municipio', reporte['municipio']),
+            detalle('Ubicación', reporte['ubicacion']),
+            detalle('Descripción', reporte['descripcion']),
+            detalle('Vestimenta y características', reporte['detalles']),
+            detalle('Contacto', reporte['contacto']),
+
+            const SizedBox(height: 5),
+
+            if (tieneEvidencia) ...[
+              const Text(
+                'Evidencia fotográfica',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 17,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 12),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(15),
+                child: Image.file(
+                  File(rutaEvidencia),
+                  width: double.infinity,
+                  height: 240,
+                  fit: BoxFit.contain,
+                  errorBuilder: (context, error, stackTrace) {
+                    return const Padding(
+                      padding: EdgeInsets.all(20),
+                      child: Text(
+                        'No se pudo cargar la fotografía.',
+                        style: TextStyle(color: Colors.white70),
+                      ),
+                    );
+                  },
+                ),
+              ),
+              const SizedBox(height: 20),
+            ] else
+              const Padding(
+                padding: EdgeInsets.only(bottom: 20),
+                child: Text(
+                  'No se adjuntó evidencia fotográfica.',
+                  style: TextStyle(color: Colors.white54),
+                ),
+              ),
+
+            Container(
+              padding: const EdgeInsets.all(15),
+              decoration: BoxDecoration(
+                color: revisado
+                    ? Colors.green.withValues(alpha: 0.15)
+                    : Colors.orange.withValues(alpha: 0.15),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Row(
+                children: [
+                  Icon(
+                    revisado
+                        ? Icons.check_circle_outline
+                        : Icons.pending_outlined,
+                    color: revisado ? Colors.greenAccent : Colors.orangeAccent,
+                  ),
+                  const SizedBox(width: 10),
+                  Text(
+                    revisado ? 'Reporte revisado' : 'Reporte pendiente',
+                    style: TextStyle(
+                      color: revisado
+                          ? Colors.greenAccent
+                          : Colors.orangeAccent,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            const SizedBox(height: 20),
+
+            if (!revisado)
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton.icon(
+                  onPressed: marcarRevisado,
+                  icon: const Icon(Icons.check_circle_outline),
+                  label: const Text('Marcar como revisado'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppTheme.morado,
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                  ),
+                ),
+              ),
+
+            const SizedBox(height: 10),
+
+            SizedBox(
+              width: double.infinity,
+              child: OutlinedButton(
+                onPressed: () {
+                  Navigator.pop(context, true);
+                },
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: AppTheme.moradoClaro,
+                  side: const BorderSide(color: AppTheme.moradoClaro),
+                  padding: const EdgeInsets.symmetric(vertical: 15),
+                ),
+                child: const Text('Volver a los reportes'),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
